@@ -1,3 +1,4 @@
+language: geeneric
 sudo: required
 services:
   - docker
@@ -6,7 +7,7 @@ before_install:
   - docker build -t kasperkowalski/tutorial-docker-2 -f ./client/Dockerfile.dev ./client
   
 script:
-  - docker run kasperkowalski/tutorial-docker-2 npm test -- --coverage
+  - docker run -e CI=true kasperkowalski/tutorial-docker-2 npm test
 
 after_success:
   - docker build -t kasperkowalski/tutorial-docker-2-client ./client
