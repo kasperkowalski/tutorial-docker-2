@@ -1,0 +1,23 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t kasperkowalski/tutorial-docker-2 -f ./client/Dockerfile.dev ./client
+  
+script:
+  - docker run kasperkowalski/tutorial-docker-2 npm test -- --coverage
+
+after_success:
+  - docker build -t kasperkowalski/tutorial-docker-2-client ./client
+  - docker build -t kasperkowalski/tutorial-docker-2-nginx ./nginx
+  - docker build -t kasperkowalski/tutorial-docker-2-server ./server
+  - docker build -t kasperkowalski/tutorial-docker-2-worker ./worker
+
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  
+  - docker push kasperkowalski/tutorial-docker-2-client
+  - docker push kasperkowalski/tutorial-docker-2-nginx 
+  - docker push kasperkowalski/tutorial-docker-2-server
+  - docker push kasperkowalski/tutorial-docker-2-worker
+
